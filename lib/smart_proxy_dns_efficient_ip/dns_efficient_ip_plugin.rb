@@ -2,7 +2,7 @@ require 'smart_proxy_dns_efficient_ip/dns_efficient_ip_version'
 require 'smart_proxy_dns_efficient_ip/dns_efficient_ip_configuration'
 
 module Proxy::Dns::EfficientIp
-  class Plugin < ::Proxy::Record
+  class Plugin < ::Proxy::Provider
     plugin :dns_efficient_ip, ::Proxy::Dns::EfficientIp::VERSION
 
     validate_presence :username, :password, :server_id
