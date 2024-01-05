@@ -28,6 +28,29 @@ module Proxy::Dns::EfficientIp
       true
     end
 
+    # -1 = no conflict and create the record
+    #  0 = already exists and do nothing
+    #  1 = conflict and error out
+    def record_conflicts_ip(fqdn, type, ip)
+      begin
+        ip_addr = IPAddr.new(ip)
+      rescue
+        raise Proxy::Dns::Error.new("Not an IP Address: '#{ip}'")
+      end
+
+      resources = @api.find_records(type, fqdn)
+      return -1 if resources.empty?
+      return 0 if resources.any? { |r| IPAddr.new(r["value1"]) == ip_addr }
+      1
+    end
+
+    def record_conflicts_name(fqdn, type, content)
+      resources = @api.find_records(type, fqdn)
+      return -1 if resources.empty?
+      return 0 if resources.any? { |r| r["rr_full_name_utf"].casecmp(content) == 0 }
+      1
+    end
+
     private
 
     def match_zone(record)

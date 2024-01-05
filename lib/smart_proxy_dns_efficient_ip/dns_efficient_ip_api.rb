@@ -24,7 +24,7 @@ module Proxy::Dns::EfficientIp
       if result.code == 200
         parse(result.body)&.first
       else
-        return []
+        return nil
       end
     end
 
@@ -33,6 +33,17 @@ module Proxy::Dns::EfficientIp
         where: "dnszone_is_rpz='0' and dnszone_type='master'"
       )
       parse(result.body)
+    end
+
+    def find_records(type, name)
+      result = connection.dns_rr_list(
+        where: "rr_type='#{type}' and rr_full_name_utf='#{name}'"
+      )
+      if result.code == 200
+        parse(result.body)
+      else
+        return []
+      end
     end
 
     def create_record(zone, type, name, value)
