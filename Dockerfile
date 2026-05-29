@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim
 
-ARG FOREMAN_VERSION=3.8
+ARG FOREMAN_VERSION
 
 RUN export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
